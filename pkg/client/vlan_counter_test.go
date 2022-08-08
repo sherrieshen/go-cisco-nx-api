@@ -24,7 +24,6 @@ func TestParseShowVlanCountersJsonOutput(t *testing.T) {
 			shouldErr:  false,
 		},
 		{
-
 			input:      "show.vlan.counters.2",
 			exp:        &VlanCounters{},
 			count:      2,
