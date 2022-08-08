@@ -136,7 +136,7 @@ func main() {
 			log.Fatalf("%s", err)
 		}
 		for _, vlanCounter := range vlanCounters {
-			fmt.Fprintf(os.Stdout, "Vlan ID %d, Bytes In: %d, Bytes Out: %d\n", vlanCounter.ID, vlanCounter.InputBytes, vlanCounter.OutputUnicastBytes)
+			fmt.Fprintf(os.Stdout, "Vlan ID %d, InUcastBytes: %d, OutUcastBytes: %d\n", vlanCounter.ID, vlanCounter.InputUnicastBytes, vlanCounter.OutputUnicastBytes)
 		}
 		log.Debugf("took %s", time.Since(start))
 	case "show interface":

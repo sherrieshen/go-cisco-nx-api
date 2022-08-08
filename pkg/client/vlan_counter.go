@@ -1,7 +1,6 @@
 package client
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 )
@@ -24,34 +23,6 @@ type vlanCountersResponseResultBodyVlanCountersTable struct {
 	VlanCountersRow []vlanCountersResponseResultBodyVlanCountersRow `json:"ROW_vlancounters" xml:"ROW_vlancounters"`
 }
 
-func (t *vlanCountersResponseResultBodyVlanCountersTable) UnmarshalJSON(b []byte) error {
-	size := len(b)
-	i := bytes.IndexByte(b, byte(':'))
-	if i < 0 {
-		return fmt.Errorf("Error unmarshalling vlanCountersResponseResultBodyVlanCountersTable")
-	}
-	j := bytes.IndexByte(b[i:], byte('['))
-	switch {
-	case j > 10 || j < 0:
-		// single entry
-		var r vlanCountersResponseResultBodyVlanCountersRow
-		err := json.Unmarshal(b[(i+2):size-1], &r)
-		if err != nil {
-			return fmt.Errorf("Error unmarshalling vlanCountersResponseResultBodyVlanCountersTable: %s", err)
-		}
-		t.VlanCountersRow = append(t.VlanCountersRow, r)
-	case j < 10 && j >= 0:
-		// multiple entries
-		var r []vlanCountersResponseResultBodyVlanCountersRow
-		err := json.Unmarshal(b[(i+2):size-1], &r)
-		if err != nil {
-			return fmt.Errorf("Error unmarshalling vlanCountersResponseResultBodyVlanCountersTable: %s", err)
-		}
-		t.VlanCountersRow = r
-	}
-	return nil
-}
-
 type vlanCountersResponseResultBodyVlanCountersRow struct {
 	ID                    uint64 `json:"vlanshowbr-vlanid" xml:"vlanshowbr-vlanid"`
 	InputUnicastBytes     uint64 `json:"l2_ing_ucast_b" xml:"l2_ing_ucast_b"`
@@ -68,12 +39,10 @@ type vlanCountersResponseResultBodyVlanCountersRow struct {
 
 type VlanCounters struct {
 	ID                    uint64 `json:"id" xml:"id"`
-	InputBytes            uint64 `json:"input_bytes" xml:"input_bytes"`
 	InputUnicastBytes     uint64 `json:"input_ucast_bytes" xml:"input_ucast_bytes"`
 	InputUnicastBytesL3   uint64 `json:"input_ucast_bytes_l3" xml:"input_ucast_bytes_l3"`
 	InputMulticastBytes   uint64 `json:"input_mcast_bytes" xml:"input_mcast_bytes"`
 	InputBroadcastBytes   uint64 `json:"input_bcast_bytes" xml:"input_bcast_bytes"`
-	InputPackets          uint64 `json:"input_packets" xml:"input_packets"`
 	InputUnicastPackets   uint64 `json:"input_ucast_packets" xml:"input_ucast_packets"`
 	InputUnicastPacketsL3 uint64 `json:"input_ucast_packets_l3" xml:"input_ucast_packets_l3"`
 	InputMulticastPackets uint64 `json:"input_mcast_packets" xml:"input_mcast_packets"`
@@ -101,12 +70,10 @@ func NewVlanCountersFromBytes(s []byte) ([]*VlanCounters, error) {
 	for _, v := range vCountersResponse.Result.Body.VlanCountersTable.VlanCountersRow {
 		vlanCounter := &VlanCounters{}
 		vlanCounter.ID = v.ID
-		vlanCounter.InputBytes = v.InputUnicastBytes + v.InputMulticastBytes + v.InputBroadcastBytes
 		vlanCounter.InputUnicastBytes = v.InputUnicastBytes
 		vlanCounter.InputUnicastBytesL3 = v.L3InputUnicastBytes
 		vlanCounter.InputMulticastBytes = v.InputMulticastBytes
 		vlanCounter.InputBroadcastBytes = v.InputBroadcastBytes
-		vlanCounter.InputPackets = v.InputUnicastPackets + v.InputMulticastPackets + v.InputBroadcastPackets
 		vlanCounter.InputUnicastPackets = v.InputUnicastPackets
 		vlanCounter.InputUnicastPacketsL3 = v.L3InputUnicastPackets
 		vlanCounter.InputMulticastPackets = v.InputMulticastPackets
