@@ -20,6 +20,7 @@ information, vlans and interfaces, etc.
 
 * `GetSystemInfo()`: **show version**
 * `GetVlans()`: **show vlan**
+* `GetVlanCounters()`: **show vlan counters**
 * `GetInterfaces()` **show interface**
 * `GetSystemResources()` **show system resources** (CPU, Memory)
 * `GetSystemEnvironment()` **show environment** (Fans, Power Supplies, Sensors)
