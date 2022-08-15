@@ -1,4 +1,4 @@
-module github.com/greenpau/go-cisco-nx-api
+module github.com/sherrieshen/go-cisco-nx-api
 
 go 1.15
 
